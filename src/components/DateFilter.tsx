@@ -4,17 +4,44 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const presets = [
-  { label: "7 dias", value: "7d" },
-  { label: "14 dias", value: "14d" },
-  { label: "30 dias", value: "30d" },
-  { label: "90 dias", value: "90d" },
+  { label: "Hoje", value: "hoje" },
+  { label: "Ultimos 7 dias", value: "7d" },
+  { label: "Ultimos 30 dias", value: "30d" },
+  { label: "Este mes", value: "este-mes" },
+  { label: "Mes passado", value: "mes-passado" },
 ];
 
 function getDateRange(preset: string): { from: string; to: string } {
-  const to = new Date();
-  const from = new Date();
-  const days = parseInt(preset) || 30;
-  from.setDate(from.getDate() - days);
+  const today = new Date();
+  const to = new Date(today);
+  const from = new Date(today);
+
+  switch (preset) {
+    case "hoje":
+      break;
+    case "7d":
+      from.setDate(from.getDate() - 7);
+      break;
+    case "30d":
+      from.setDate(from.getDate() - 30);
+      break;
+    case "este-mes":
+      from.setDate(1);
+      break;
+    case "mes-passado": {
+      const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      from.setFullYear(lastMonth.getFullYear());
+      from.setMonth(lastMonth.getMonth());
+      from.setDate(1);
+      to.setDate(0); // last day of previous month
+      break;
+    }
+    default: {
+      const days = parseInt(preset) || 30;
+      from.setDate(from.getDate() - days);
+    }
+  }
+
   return {
     from: from.toISOString().split("T")[0],
     to: to.toISOString().split("T")[0],
@@ -30,8 +57,8 @@ export function DateFilter() {
   const customFrom = searchParams.get("de") || "";
   const customTo = searchParams.get("ate") || "";
   const [showCustom, setShowCustom] = useState(currentPreset === "custom");
-  const [fromDate, setFromDate] = useState(customFrom || getDateRange("30").from);
-  const [toDate, setToDate] = useState(customTo || getDateRange("0").to);
+  const [fromDate, setFromDate] = useState(customFrom || getDateRange("30d").from);
+  const [toDate, setToDate] = useState(customTo || getDateRange("hoje").to);
 
   const applyFilter = useCallback(
     (preset: string, from?: string, to?: string) => {
@@ -63,7 +90,7 @@ export function DateFilter() {
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
             currentPreset === p.value && !showCustom
               ? "bg-[var(--color-primary)] text-white"
-              : "bg-[var(--color-card)] text-[var(--color-muted)] hover:bg-[var(--color-card-hover)] hover:text-white"
+              : "bg-[var(--color-background)] text-[var(--color-muted)] hover:bg-[var(--color-card-hover)] hover:text-white"
           }`}
         >
           {p.label}
@@ -75,7 +102,7 @@ export function DateFilter() {
         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
           showCustom
             ? "bg-[var(--color-primary)] text-white"
-            : "bg-[var(--color-card)] text-[var(--color-muted)] hover:bg-[var(--color-card-hover)] hover:text-white"
+            : "bg-[var(--color-background)] text-[var(--color-muted)] hover:bg-[var(--color-card-hover)] hover:text-white"
         }`}
       >
         Personalizado
@@ -87,14 +114,14 @@ export function DateFilter() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="px-2 py-1.5 rounded-lg text-xs bg-[var(--color-card)] text-white border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-primary)]"
+            className="px-2 py-1.5 rounded-lg text-xs bg-[var(--color-background)] text-white border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-primary)]"
           />
           <span className="text-[var(--color-muted)] text-xs">a</span>
           <input
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="px-2 py-1.5 rounded-lg text-xs bg-[var(--color-card)] text-white border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-primary)]"
+            className="px-2 py-1.5 rounded-lg text-xs bg-[var(--color-background)] text-white border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-primary)]"
           />
           <button
             onClick={() => applyFilter("custom", fromDate, toDate)}

@@ -2,7 +2,6 @@ import { QualityScoreTable } from "@/components/QualityScoreTable";
 import { MetricCard } from "@/components/MetricCard";
 import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getKeywordsQuality } from "@/lib/data";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -23,10 +22,7 @@ export async function AccountQuality({ accountId, basePath }: { accountId: numbe
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <div>
-          <Link href={basePath} className="text-[var(--color-primary)] text-sm hover:underline">
-            ← {account.name}
-          </Link>
-          <h1 className="text-2xl font-bold text-white mt-1">Quality Score</h1>
+          <h1 className="text-2xl font-bold text-white">Quality Score</h1>
           <p className="text-[var(--color-muted)] text-sm mt-1">{keywords.length} palavras-chave analisadas</p>
         </div>
 

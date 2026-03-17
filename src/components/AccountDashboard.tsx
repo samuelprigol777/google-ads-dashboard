@@ -3,7 +3,6 @@ import { CampaignTable } from "@/components/CampaignTable";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getCampaignMetrics } from "@/lib/data";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -57,20 +56,9 @@ export async function AccountDashboard({ accountId, basePath }: { accountId: num
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Link
-              href={`${basePath}/search-terms`}
-              className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
-            >
-              Termos de Busca
-            </Link>
-            <Link
-              href={`${basePath}/quality`}
-              className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
-            >
-              Quality Score
-            </Link>
-          </div>
+          <span className="text-xs px-3 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+            Ativo
+          </span>
         </div>
 
         <div className="bg-[var(--color-card)] rounded-xl px-4 py-3">
