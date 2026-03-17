@@ -22,7 +22,8 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   const ctr = totalImpressions > 0 ? totalClicks / totalImpressions : 0;
   const cpa = totalConversions > 0 ? totalCost / totalConversions : 0;
 
-  const campaigns = metrics.map((m: Record<string, unknown>) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const campaigns = metrics.map((m: any) => ({
     name: (m.campaign_name || m.campaigns?.name || "") as string,
     type: (m.type || m.campaigns?.type || "") as string,
     status: (m.status || m.campaigns?.status || "") as string,
