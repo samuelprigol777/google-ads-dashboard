@@ -1,9 +1,11 @@
 import { MetricCard } from "@/components/MetricCard";
 import { CampaignTable } from "@/components/CampaignTable";
 import { PerformanceChart } from "@/components/PerformanceChart";
+import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getCampaignMetrics } from "@/lib/data";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -47,28 +49,42 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
       cost: c.cost,
     }));
 
+  const projectColor = accountId === 1 ? "purple" : "blue";
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">{account.name}</h1>
-          <p className="text-[var(--color-muted)] text-sm mt-1">
-            ID: {account.google_ads_id} · {account.currency} · {account.timezone}
-          </p>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className={`w-3 h-3 rounded-full bg-${projectColor}-500`}></span>
+            <div>
+              <h1 className="text-2xl font-bold text-white">{account.name}</h1>
+              <p className="text-[var(--color-muted)] text-sm mt-1">
+                ID: {account.google_ads_id} · {account.currency} · {account.timezone}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href={`/account/${accountId}/search-terms`}
+              className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
+            >
+              Termos de Busca
+            </Link>
+            <Link
+              href={`/account/${accountId}/quality`}
+              className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
+            >
+              Quality Score
+            </Link>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Link
-            href={`/account/${accountId}/search-terms`}
-            className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
-          >
-            Termos de Busca
-          </Link>
-          <Link
-            href={`/account/${accountId}/quality`}
-            className="px-4 py-2 bg-[var(--color-card)] text-sm text-white rounded-lg hover:bg-[var(--color-card-hover)] transition-colors"
-          >
-            Quality Score
-          </Link>
+
+        {/* Date Filter */}
+        <div className="bg-[var(--color-card)] rounded-xl px-4 py-3">
+          <Suspense fallback={<div className="h-8" />}>
+            <DateFilter />
+          </Suspense>
         </div>
       </div>
 
