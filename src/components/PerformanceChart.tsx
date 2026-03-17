@@ -40,11 +40,13 @@ export function PerformanceChart({ data }: { data: ChartData[] }) {
             borderRadius: "8px",
             color: "#e2e8f0",
           }}
-          formatter={(value: number, name: string) => {
-            if (name === "cost") return [`R$ ${value.toFixed(2)}`, "Custo"];
-            if (name === "impressions") return [value.toLocaleString("pt-BR"), "Impressões"];
-            if (name === "clicks") return [value.toLocaleString("pt-BR"), "Cliques"];
-            if (name === "conversions") return [value.toFixed(1), "Conversões"];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          formatter={(value: any, name: any) => {
+            const v = Number(value) || 0;
+            if (name === "cost") return [`R$ ${v.toFixed(2)}`, "Custo"];
+            if (name === "impressions") return [v.toLocaleString("pt-BR"), "Impressões"];
+            if (name === "clicks") return [v.toLocaleString("pt-BR"), "Cliques"];
+            if (name === "conversions") return [v.toFixed(1), "Conversões"];
             return [value, name];
           }}
         />
