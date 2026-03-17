@@ -7,23 +7,23 @@ const projects = [
   {
     id: 1,
     name: "Y-U-P Cosméticos",
-    shortName: "YUP",
+    base: "/yup",
     color: "bg-purple-500",
     links: [
-      { href: "/account/1", label: "Dashboard" },
-      { href: "/account/1/search-terms", label: "Termos de Busca" },
-      { href: "/account/1/quality", label: "Quality Score" },
+      { href: "/yup", label: "Dashboard" },
+      { href: "/yup/search-terms", label: "Termos de Busca" },
+      { href: "/yup/quality", label: "Quality Score" },
     ],
   },
   {
     id: 2,
     name: "Zanfir (Ótica)",
-    shortName: "ZNF",
+    base: "/zanfir",
     color: "bg-blue-500",
     links: [
-      { href: "/account/2", label: "Dashboard" },
-      { href: "/account/2/search-terms", label: "Termos de Busca" },
-      { href: "/account/2/quality", label: "Quality Score" },
+      { href: "/zanfir", label: "Dashboard" },
+      { href: "/zanfir/search-terms", label: "Termos de Busca" },
+      { href: "/zanfir/quality", label: "Quality Score" },
     ],
   },
 ];
@@ -56,7 +56,7 @@ export function Sidebar() {
 
         {/* Project Sections */}
         {projects.map((project) => {
-          const isProjectActive = pathname.startsWith(`/account/${project.id}`);
+          const isProjectActive = pathname.startsWith(project.base);
           return (
             <div key={project.id}>
               <div className="flex items-center gap-2 px-3 py-2">
@@ -67,9 +67,9 @@ export function Sidebar() {
               </div>
               <div className="space-y-0.5 ml-2">
                 {project.links.map((link) => {
-                  const isActive = pathname === link.href ||
-                    (link.href.endsWith("search-terms") && pathname.includes("search-terms") && pathname.includes(`/account/${project.id}`)) ||
-                    (link.href.endsWith("quality") && pathname.includes("quality") && pathname.includes(`/account/${project.id}`));
+                  const isExact = pathname === link.href;
+                  const isActive = isExact ||
+                    (pathname.startsWith(link.href) && link.href !== project.base);
                   return (
                     <Link
                       key={link.href}

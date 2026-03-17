@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-const projectColors: Record<number, { bg: string; border: string; dot: string }> = {
-  1: { bg: "hover:border-purple-500/50", border: "border-purple-500/20", dot: "bg-purple-500" },
-  2: { bg: "hover:border-blue-500/50", border: "border-blue-500/20", dot: "bg-blue-500" },
+const projectConfig: Record<number, { bg: string; border: string; dot: string; path: string }> = {
+  1: { bg: "hover:border-purple-500/50", border: "border-purple-500/20", dot: "bg-purple-500", path: "/yup" },
+  2: { bg: "hover:border-blue-500/50", border: "border-blue-500/20", dot: "bg-blue-500", path: "/zanfir" },
 };
 
 export default async function OverviewPage() {
@@ -43,13 +43,13 @@ export default async function OverviewPage() {
         <h2 className="text-lg font-semibold text-white mb-4">Selecione um projeto</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {overview.map((o) => {
-            const colors = projectColors[o.account.id] || projectColors[1];
+            const colors = projectConfig[o.account.id] || projectConfig[1];
             const ctr = o.totals.impressions > 0 ? o.totals.clicks / o.totals.impressions : 0;
             const cpa = o.totals.conversions > 0 ? o.totals.cost / o.totals.conversions : 0;
             return (
               <Link
                 key={o.account.id}
-                href={`/account/${o.account.id}`}
+                href={colors.path}
                 className={`bg-[var(--color-card)] rounded-xl p-6 border-2 ${colors.border} ${colors.bg} transition-all block group`}
               >
                 <div className="flex items-center gap-3 mb-5">
