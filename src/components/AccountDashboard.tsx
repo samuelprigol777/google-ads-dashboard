@@ -1,6 +1,5 @@
 import { MetricCard } from "@/components/MetricCard";
 import { CampaignTable } from "@/components/CampaignTable";
-import { PerformanceChart } from "@/components/PerformanceChart";
 import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getCampaignMetrics, DateRange } from "@/lib/data";
 import { notFound } from "next/navigation";
@@ -42,16 +41,6 @@ export async function AccountDashboard({
     cpa: (m.cpa || 0) as number,
   }));
 
-  const chartData = campaigns
-    .filter((c) => c.impressions > 0 || c.clicks > 0)
-    .map((c) => ({
-      name: c.name.length > 20 ? c.name.slice(0, 20) + "..." : c.name,
-      impressions: c.impressions,
-      clicks: c.clicks,
-      conversions: c.conversions,
-      cost: c.cost,
-    }));
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
@@ -81,11 +70,6 @@ export async function AccountDashboard({
         <MetricCard title="Cliques" value={totalClicks.toLocaleString("pt-BR")} subtitle={`CTR: ${(ctr * 100).toFixed(2)}%`} color="blue" />
         <MetricCard title="Custo Total" value={`R$ ${totalCost.toFixed(2)}`} color="yellow" />
         <MetricCard title="Conversões" value={totalConversions.toFixed(0)} subtitle={`CPA: R$ ${cpa.toFixed(2)}`} color="green" />
-      </div>
-
-      <div className="bg-[var(--color-card)] rounded-xl p-5">
-        <h2 className="text-lg font-semibold text-white mb-4">Performance por Campanha</h2>
-        <PerformanceChart data={chartData} />
       </div>
 
       <div className="bg-[var(--color-card)] rounded-xl p-5">
