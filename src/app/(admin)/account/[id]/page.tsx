@@ -3,19 +3,28 @@ import { CampaignTable } from "@/components/CampaignTable";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getCampaignMetrics } from "@/lib/data";
+import { parseDateRangeFromParams } from "@/lib/date-utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AccountPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { id } = await params;
+  const sp = await searchParams;
   const accountId = parseInt(id);
+  const dateRange = parseDateRangeFromParams(sp);
   const account = await getAccount(accountId);
   if (!account) notFound();
 
-  const metrics = await getCampaignMetrics(accountId);
+  const metrics = await getCampaignMetrics(accountId, dateRange);
 
   const totalImpressions = metrics.reduce((s, m) => s + (m.impressions || 0), 0);
   const totalClicks = metrics.reduce((s, m) => s + (m.clicks || 0), 0);
@@ -80,7 +89,6 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* Date Filter */}
         <div className="bg-[var(--color-card)] rounded-xl px-4 py-3">
           <Suspense fallback={<div className="h-8" />}>
             <DateFilter />
@@ -92,7 +100,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
         <MetricCard title="Impressões" value={totalImpressions.toLocaleString("pt-BR")} color="blue" />
         <MetricCard title="Cliques" value={totalClicks.toLocaleString("pt-BR")} subtitle={`CTR: ${(ctr * 100).toFixed(2)}%`} color="blue" />
         <MetricCard title="Custo Total" value={`R$ ${totalCost.toFixed(2)}`} color="yellow" />
-        <MetricCard title="Conversões" value={totalConversions.toFixed(1)} subtitle={`CPA: R$ ${cpa.toFixed(2)}`} color="green" />
+        <MetricCard title="Conversões" value={totalConversions.toFixed(0)} subtitle={`CPA: R$ ${cpa.toFixed(2)}`} color="green" />
       </div>
 
       <div className="bg-[var(--color-card)] rounded-xl p-5">

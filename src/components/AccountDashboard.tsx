@@ -2,15 +2,23 @@ import { MetricCard } from "@/components/MetricCard";
 import { CampaignTable } from "@/components/CampaignTable";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { DateFilter } from "@/components/DateFilter";
-import { getAccount, getCampaignMetrics } from "@/lib/data";
+import { getAccount, getCampaignMetrics, DateRange } from "@/lib/data";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export async function AccountDashboard({ accountId, basePath }: { accountId: number; basePath: string }) {
+export async function AccountDashboard({
+  accountId,
+  basePath,
+  dateRange,
+}: {
+  accountId: number;
+  basePath: string;
+  dateRange?: DateRange;
+}) {
   const account = await getAccount(accountId);
   if (!account) notFound();
 
-  const metrics = await getCampaignMetrics(accountId);
+  const metrics = await getCampaignMetrics(accountId, dateRange);
 
   const totalImpressions = metrics.reduce((s, m) => s + (m.impressions || 0), 0);
   const totalClicks = metrics.reduce((s, m) => s + (m.clicks || 0), 0);
@@ -72,7 +80,7 @@ export async function AccountDashboard({ accountId, basePath }: { accountId: num
         <MetricCard title="Impressões" value={totalImpressions.toLocaleString("pt-BR")} color="blue" />
         <MetricCard title="Cliques" value={totalClicks.toLocaleString("pt-BR")} subtitle={`CTR: ${(ctr * 100).toFixed(2)}%`} color="blue" />
         <MetricCard title="Custo Total" value={`R$ ${totalCost.toFixed(2)}`} color="yellow" />
-        <MetricCard title="Conversões" value={totalConversions.toFixed(1)} subtitle={`CPA: R$ ${cpa.toFixed(2)}`} color="green" />
+        <MetricCard title="Conversões" value={totalConversions.toFixed(0)} subtitle={`CPA: R$ ${cpa.toFixed(2)}`} color="green" />
       </div>
 
       <div className="bg-[var(--color-card)] rounded-xl p-5">

@@ -1,19 +1,28 @@
 import { SearchTermsTable } from "@/components/SearchTermsTable";
 import { DateFilter } from "@/components/DateFilter";
 import { getAccount, getSearchTerms } from "@/lib/data";
+import { parseDateRangeFromParams } from "@/lib/date-utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default async function SearchTermsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function SearchTermsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { id } = await params;
+  const sp = await searchParams;
   const accountId = parseInt(id);
+  const dateRange = parseDateRangeFromParams(sp);
   const account = await getAccount(accountId);
   if (!account) notFound();
 
-  const terms = await getSearchTerms(accountId);
+  const terms = await getSearchTerms(accountId, dateRange);
 
   return (
     <div className="space-y-6">

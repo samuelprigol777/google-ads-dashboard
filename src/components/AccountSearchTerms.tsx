@@ -1,14 +1,22 @@
 import { SearchTermsTable } from "@/components/SearchTermsTable";
 import { DateFilter } from "@/components/DateFilter";
-import { getAccount, getSearchTerms } from "@/lib/data";
+import { getAccount, getSearchTerms, DateRange } from "@/lib/data";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export async function AccountSearchTerms({ accountId, basePath }: { accountId: number; basePath: string }) {
+export async function AccountSearchTerms({
+  accountId,
+  basePath,
+  dateRange,
+}: {
+  accountId: number;
+  basePath: string;
+  dateRange?: DateRange;
+}) {
   const account = await getAccount(accountId);
   if (!account) notFound();
 
-  const terms = await getSearchTerms(accountId);
+  const terms = await getSearchTerms(accountId, dateRange);
 
   return (
     <div className="space-y-6">

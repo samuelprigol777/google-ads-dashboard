@@ -5,7 +5,13 @@ import { getAccount, getKeywordsQuality } from "@/lib/data";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export async function AccountQuality({ accountId, basePath }: { accountId: number; basePath: string }) {
+export async function AccountQuality({
+  accountId,
+  basePath,
+}: {
+  accountId: number;
+  basePath: string;
+}) {
   const account = await getAccount(accountId);
   if (!account) notFound();
 
